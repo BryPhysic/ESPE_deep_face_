@@ -1,7 +1,7 @@
 import cv2
 import time
 
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 face_cascade = cv2.CascadeClassifier('models/haarcascade_frontalface_default.xml')
 
 # Variable para controlar la toma de fotos
@@ -10,8 +10,7 @@ take_photo_f = False
 while True:
     ret, frame = cap.read()
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-    
+    faces = face_cascade.detectMultiScale(gray, 1.3, 5) 
     # Inicializar roi_color fuera del bucle for
     roi_color = None
 
@@ -22,7 +21,6 @@ while True:
 
     # Tomar una foto de toda la imagen con los bordes del rectángulo
     if cv2.waitKey(1) == ord('t'):
-
         roi_color = frame
         take_photo_f = True
         if take_photo_f and roi_color is not None: # Verificar si se ha detectado algún rostro
@@ -31,7 +29,6 @@ while True:
             print("Foto guardada como: ", img_name)
             take_photo = False
 
-   
 
     # Tomar una foto de la región del rostro sin los bordes del rectángulo
     if cv2.waitKey(1) == ord('c'):
@@ -42,7 +39,7 @@ while True:
         cv2.imwrite(img_name, roi_color)
         print("Foto guardada como: ", img_name)
         take_photo = False
-    
+
     frame = cv2.flip(frame, 1)
     cv2.imshow('frame', frame)
 
