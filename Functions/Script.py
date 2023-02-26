@@ -169,9 +169,9 @@ def main():
             st.write(data)
 
             print(data)
-            model ,le = joblib.load('models\Model.pkl')
-            scaler = MinMaxScaler()
             
+            
+
             #data = scaler.fit_transform(data)
             #prediction = model.predict(data)
 
