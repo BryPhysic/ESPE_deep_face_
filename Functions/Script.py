@@ -4,13 +4,14 @@ import time
 import pandas as pd
 from deepface import DeepFace
 import joblib
+import pickle
 from sklearn.preprocessing import MinMaxScaler
-MODEL_PATH = 'models\mejor_modeloLinR.pkl'
-
+import numpy as np
+global frame, roi_color, data, data_portada
 def main():
-    global frame, roi_color, data
-    Menu = st.sidebar.selectbox("Filtro", ["Portada", "Take a Picture", "Clasificate", "Blur", "Canny"])
-
+    global frame, roi_color, data, data_portada
+    Menu = st.sidebar.selectbox("Filtro", ["Portada", "Take a Picture", "Clasificate"])
+    data = {}
     if Menu == "Portada":
         data = pd.read_csv('Datos\Datos_cosumo.csv')
 
@@ -62,6 +63,7 @@ def main():
                       'Rasgos':output[0]['dominant_race'],
                       'Emocion':output[0]['dominant_emotion']
                         }
+                    data_portada = data
                     st.info('Según el análisis de la imagen:\n')
                     col1, col2 = st.columns(2)
     
@@ -92,6 +94,8 @@ def main():
                       'Rasgos':output[0]['dominant_race'],
                       'Emocion':output[0]['dominant_emotion']
                         }
+                        
+                data_portada = data
                 st.info('Según el análisis de la imagen:\n')
                 st.table(data)
                 
@@ -103,15 +107,9 @@ def main():
         cap.release()
 
     elif Menu == "Clasificate":
-            
-        model=''
-        # Se carga el modelo
-        """""
-        if model=='':
-            with open(MODEL_PATH, 'rb') as file:
-                model = pickle.load(file)
-                """
 
+        
+       
         ciudades_ecuador = {
                                 'Quito': 'Sierra',
                                 'Guayaquil': 'Costa',
@@ -119,18 +117,91 @@ def main():
                                 'Ambato': 'Sierra',
                                 'Manta': 'Costa',
                                 'Esmeraldas': 'Costa',
+                                'Ibarra': 'Sierra',
+                                'Loja': 'Sierra',
+                                'Portoviejo': 'Costa',
+                                'Riobamba': 'Sierra',
+                                'Salinas': 'Costa',
+                                'Santa Elena': 'Costa',
+                                'Tena': 'Oriente',
+                                'Machala': 'Costa',
+                                'Playas': 'Costa',
+                                'Babahoyo': 'Costa',
+                                'Machachi': 'Sierra',
+                                'Latacunga': 'Sierra',
+                                'Puyo': 'Oriente',
+                                'Zamora': 'Oriente',
+                                'Coca': 'Oriente',
+                                'Puerto Francisco de Orellana': 'Oriente',
+                                'Macas': 'Oriente',
+                                'Tulcan': 'Sierra',
+                                'Santo Domingo de los Tsachilas': 'Costa',
+                                'Guaranda': 'Sierra',
+                                'Azogues': 'Sierra',
+                                'Chone': 'Costa',
+                                'La Libertad': 'Costa',
+                                'Pasaje': 'Costa',
+                                'Samborondon': 'Costa',
+                                'Milagro': 'Costa',
+                                'Vinces': 'Costa',
+                                'Jipijapa': 'Costa',
+                                'Santa Rosa': 'Costa',
+                                'San Gabriel': 'Sierra',
+                                'Nueva Loja': 'Oriente',
+                                'Puerto Ayora': 'Galapagos',
+                                'Puerto Villamil': 'Galapagos',
+                                'Baños de Agua Santa': 'Sierra',
                                 
                             }
         
         Edad = st.slider('Seleccione una edad', 18, 70, 18)
-        Genero = st.selectbox('Seleccione un género', ['Masculino', 'Fenemino'])
+        Genero = st.selectbox('Seleccione un género', ['Man', 'Woman'])
         Rasgos = st.selectbox('Seleccione un rasgo', ['asian', 'indian', 'black', 'white', 'middle eastern', 'latino hispanic'])
         emocion = st.selectbox('Seleccione una emoción', ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'])
         meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 
         Mes = st.selectbox('Mes de compra', meses)
         Hora = st.slider('hora', 8, 22, 13)
-        ciudades = ['Quito', 'Guayaquil', 'Cuenca', 'Ambato', 'Manta', 'Esmeraldas']
+        ciudades = [    'Quito',
+                        'Guayaquil',
+                        'Cuenca',
+                        'Ambato',
+                        'Manta',
+                        'Esmeraldas',
+                        'Ibarra',
+                        'Loja',
+                        'Portoviejo',
+                        'Riobamba',
+                        'Salinas',
+                        'Santa Elena',
+                        'Tena',
+                        'Machala',
+                        'Playas',
+                        'Babahoyo',
+                        'Machachi',
+                        'Latacunga',
+                        'Puyo',
+                        'Zamora',
+                        'Coca',
+                        'Puerto Francisco de Orellana',
+                        'Macas',
+                        'Tulcan',
+                        'Santo Domingo de los Tsachilas',
+                        'Guaranda',
+                        'Azogues',
+                        'Chone',
+                        'La Libertad',
+                        'Pasaje',
+                        'Samborondon',
+                        'Milagro',
+                        'Vinces',
+                        'Jipijapa',
+                        'Santa Rosa',
+                        'San Gabriel',
+                        'Nueva Loja',
+                        'Puerto Ayora',
+                        'Puerto Villamil',
+                        'Baños de Agua Santa']
 
         Ciudad = st.selectbox('Seleccione una ciudad', ciudades)
         
@@ -139,6 +210,12 @@ def main():
         Dia_Festivo= st.checkbox('¿Es día festivo?')
         
         if st.button('Predecir'):
+
+            with open("models\label_encoders.pkl", "rb") as f:
+                le_list = pickle.load(f)
+            with open('models\modelo.pkl', 'rb') as archivo:
+                model = pickle.load(archivo)
+
             data = {
                 'Edad': Edad,
                 'Genero': Genero,
@@ -152,21 +229,41 @@ def main():
                 'Dia_Festivo': Dia_Festivo
             }
 
+            data = pd.DataFrame(data, index=[0])
+            st.write(data)
+
             data2 = {
                 'Edad': Edad,
                 'Genero': Genero,
                 'Rasgos': Rasgos,
-                'Emocion': emocion,
+                
                 'Mes': Mes,
                 'Hora': Hora,
                 'Ciudad': Ciudad,
-                'Region': ciudades_ecuador[Ciudad],
                 'Estacion': Estacion,
-                'Dia_Festivo':  True if Dia_Festivo else False
+                'Dia_Festivo':  True if Dia_Festivo else False,
+                'Region': ciudades_ecuador[Ciudad]
+                
+                
             }
 
-            data = pd.DataFrame(data2, index=[0])
-            st.write(data)
+            dfn = pd.DataFrame(data2, index=[0])
+            dfn['Edad'] = dfn['Edad'].astype(int)
+            dfn['Hora'] = dfn['Hora'].astype(int)
+            dfn["Genero"] = le_list[0].transform([dfn["Genero"]])[0]
+            dfn["Rasgos"] = le_list[1].transform([dfn["Rasgos"]])[0]
+            dfn["Mes"] = le_list[2].transform([dfn["Mes"]])[0]
+            dfn["Ciudad"] = le_list[3].transform([dfn["Ciudad"]])[0]
+            dfn["Estacion"] = le_list[4].transform([dfn["Estacion"]])[0]
+            dfn["Dia_Festivo"] = le_list[5].transform([dfn["Dia_Festivo"]])[0]
+            #dfn["Dia_Festivo"] = le_list[5].transform([eval(dfn["Dia_Festivo"][0])])[0]
+            dfn["Region"] = le_list[6].transform([dfn["Region"]])[0]
+
+            st.write(dfn)
+            prediccion = model.predict(dfn)
+            val = le_list[7].inverse_transform([prediccion[0]])
+            st.success(f'El refresco que le conviene es: {val}')
+
 
             print(data)
             
