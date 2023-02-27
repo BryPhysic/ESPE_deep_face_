@@ -5,6 +5,7 @@ import pandas as pd
 from deepface import DeepFace
 import joblib
 import pickle
+from PIL import Image
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 global frame, roi_color, data, data_portada
@@ -13,10 +14,11 @@ def main():
     Menu = st.sidebar.selectbox("Filtro", ["Portada", "Take a Picture", "Clasificate"])
     data = {}
     if Menu == "Portada":
-        
+        image = Image.open('imgs\portada.jpg')
+        st.image(image, caption='', width=700)
 
         # Introducción
-        st.title("Análisis de ventas de refrescos")
+        st.title("Análisis de ventas de Refrescos")
         st.write("Este proyecto tiene como objetivo desarrollar un modelo de clasificación que permita predecir las ventas de un determinado tipo de refresco en función de diferentes variables como la edad, género, rasgos, mes, hora, ciudad y estación.")
 
         # Objetivos
@@ -184,7 +186,7 @@ def main():
                                 
                             }
         
-        Edad = st.slider('Seleccione una edad', 18, 70, 18)
+        Edad = st.slider('Seleccione una edad', 10, 70, 18)
         Genero = st.selectbox('Seleccione un género', ['Man', 'Woman'])
         Rasgos = st.selectbox('Seleccione un rasgo', ['asian', 'indian', 'black', 'white', 'middle eastern', 'latino hispanic'])
         emocion = st.selectbox('Seleccione una emoción', ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'])
@@ -295,7 +297,7 @@ def main():
             st.success(f'El refresco que le conviene es: {val}')
 
 
-            print(data)
+            #print(data)
             
             
 
