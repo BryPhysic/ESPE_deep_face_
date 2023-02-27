@@ -13,12 +13,42 @@ def main():
     Menu = st.sidebar.selectbox("Filtro", ["Portada", "Take a Picture", "Clasificate"])
     data = {}
     if Menu == "Portada":
-        data = pd.read_csv('Datos\Datos_cosumo.csv')
+        
+
+        # Introducción
+        st.title("Análisis de ventas de refrescos")
+        st.write("Este proyecto tiene como objetivo desarrollar un modelo de clasificación que permita predecir las ventas de un determinado tipo de refresco en función de diferentes variables como la edad, género, rasgos, mes, hora, ciudad y estación.")
+
+        # Objetivos
+        st.header("Objetivos")
+        st.write("El objetivo principal de este proyecto es desarrollar un modelo de clasificación preciso y eficiente que permita predecir las ventas de un determinado tipo de refresco en función de diferentes variables. Algunos de los objetivos específicos son:")
+
+        st.write("- Analizar la relación entre las diferentes variables y las ventas del refresco.")
+        st.write("- Seleccionar las variables más relevantes para el modelo de clasificación.")
+        st.write("- Entrenar y evaluar diferentes modelos de clasificación para determinar cuál es el más preciso y eficiente.")
+
+        # Análisis de variables
+        st.header("Análisis de variables")
+        st.write("El conjunto de datos proporcionado contiene las siguientes variables:")
+
+        st.write("- Edad: variable numérica que indica la edad de la persona.")
+        st.write("- Género: variable categórica que indica el género de la persona.")
+        st.write("- Rasgos: variable categórica que indica la raza o etnia de la persona.")
+        st.write("- Mes: variable categórica que indica el mes en que se realizó la compra.")
+        st.write("- Hora: variable numérica que indica la hora en que se realizó la compra.")
+        st.write("- Ciudad: variable categórica que indica la ciudad donde se realizó la compra.")
+        st.write("- Estación: variable categórica que indica la estación del año en que se realizó la compra.")
+
+        st.write("Es importante realizar un análisis exploratorio de cada una de estas variables para determinar su relevancia para el modelo de clasificación y si es necesario hacer algún tipo de transformación de las mismas.")
+
+        # Modelo de reconocimiento facial
+        st.header("Modelo de reconocimiento facial")
+        st.write("Además de las variables proporcionadas en el conjunto de datos, también se cuenta con un modelo de reconocimiento facial que permite determinar la edad, género y rasgos o raza de la persona. Estas variables podrían ser útiles para mejorar la precisión del modelo de clasificación y se explorarán en detalle en el análisis exploratorio de datos.")
+
+
 
         # Mostrar las columnas y sus posibles valores
-        for col in data.columns:
-            st.write(f"**{col}**")
-            st.write(data[col].unique())
+       
         
     elif Menu == "Take a Picture":
         st.title("Reconocer rostro")
@@ -94,7 +124,7 @@ def main():
                       'Rasgos':output[0]['dominant_race'],
                       'Emocion':output[0]['dominant_emotion']
                         }
-                        
+
                 data_portada = data
                 st.info('Según el análisis de la imagen:\n')
                 st.table(data)
